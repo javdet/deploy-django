@@ -1,0 +1,60 @@
+---
+- name: Install Git
+  apt:
+    name: git
+    state: present
+
+- name: Create work dirs
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+  loop:
+    - "{{ work_dir }}/data"
+    - "{{ work_dir }}/nginx"
+
+- name: Clone git repo
+  git:
+    repo: "{{ repo_url }}"
+    dest: "{{ work_dir }}/django"
+    clone: yes
+    force: yes
+    version: master
+
+- name: Copy docker-compose file
+  template:
+    src: docker-compose.yml.j2
+    dest: "{{ work_dir }}/docker-compose.yml"
+    mode: 0644
+
+- name: Copy healthcheck
+  template:
+    src: docker-healthcheck.j2
+    dest: "{{ work_dir }}/docker-healthcheck"
+    mode: 0755
+
+- name: Copy Dockerfile
+  template:
+    src: Dockerfile.j2
+    dest: "{{ work_dir }}/django/Dockerfile"
+    mode: 0644
+
+- name: Copy entrypoint
+  template:
+    src: entrypoint.sh.j2
+    dest: "{{ work_dir }}/django/entrypoint.sh"
+    mode: 0755
+
+- name: Copy configs
+  template:
+    src: settings.py.j2
+    dest: "{{ work_dir }}/django/projectname/settings/default.py"
+
+- name: Run docker compose
+  docker_service:
+    files:
+      - {{ work_dir }}/docker-compose.yml
+    project_src: "{{ work_dir }}"
+    state: present

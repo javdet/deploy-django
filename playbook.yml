@@ -1,0 +1,7 @@
+---
+- hosts: "django"
+  become: true
+  roles:
+    - docker
+    - docker-compose
+    - django
