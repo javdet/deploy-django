@@ -17,11 +17,11 @@ services:
       - POSTGRES_PASSWORD={{ postgres_password }}
       - POSTGRES_DB={{ postgres_db }}
   app:
-    build: ./django
+    build: ./django/projectname
     restart: always
     entrypoint: /app/entrypoint.sh
     expose:
-      - 8080
+      - {{ app_port }}
     depends_on:
       db:
         condition: service_healthy
@@ -34,11 +34,11 @@ services:
       - SECRET_KEY={{ secret_key }}
   nginx:
     image: nginx:latest
+    restart: always
     ports:
       - "80:80"
     volumes:
-      - ./phone:/src
-      - ./config/nginx:/etc/nginx/conf.d
-      - ../static:/static
+      - ./nginx:/etc/nginx/conf.d
+      - ./django/static-assets:/static
     depends_on:
       - app

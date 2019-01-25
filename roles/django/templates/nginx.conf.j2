@@ -1,0 +1,19 @@
+upstream app {
+  ip_hash;
+  server app:{{ app_port }};
+}
+
+# portal
+server {
+  listen 80;
+  server_name _;
+
+  location / {
+        proxy_pass http://app/;
+  }
+
+  location /static/ {
+	autoindex on;
+	alias /static/;
+  }
+}
