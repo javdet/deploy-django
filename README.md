@@ -1,6 +1,9 @@
 Deploy django app
 =========
 
+example run
+`ansible-playbook -i hosts -v playbook.yml`
+ 
 Requirements
 ------------
 *ansible 2.6.2
