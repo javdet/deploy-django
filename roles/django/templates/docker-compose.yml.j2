@@ -17,21 +17,22 @@ services:
       - POSTGRES_PASSWORD={{ postgres_password }}
       - POSTGRES_DB={{ postgres_db }}
   app:
-    build: ./django/projectname
+    build: ./django
     restart: always
-    entrypoint: /app/entrypoint.sh
+    volumes:
+      - ./django/static-assets:/app/{{ project_name }}/static
+    entrypoint: /app/{{ project_name }}/entrypoint.sh
     expose:
       - {{ app_port }}
     depends_on:
-      db:
-        condition: service_healthy
+      - db
     environment:
       - POSTGRES_USER={{ postgres_user }}
       - POSTGRES_PASSWORD={{ postgres_password}}
       - POSTGRES_DB={{ postgres_db }}
       - POSTGRES_HOST=db
       - POSTGRES_PORT=5432
-      - SECRET_KEY={{ secret_key }}
+      - SECRET_KEY="{{ secret_key }}"
   nginx:
     image: nginx:latest
     restart: always

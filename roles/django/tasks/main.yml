@@ -1,4 +1,6 @@
 ---
+- include_vars: vault.yml
+
 - name: Install Git
   apt:
     name: git
@@ -12,13 +14,13 @@
     group: root
     mode: 0755
   loop:
-    - "{{ work_dir }}/data"
-    - "{{ work_dir }}/nginx"
+    - "{{ base_dir }}/data"
+    - "{{ base_dir }}/nginx"
 
 - name: Clone git repo
   git:
     repo: "{{ repo_url }}"
-    dest: "{{ work_dir }}/django"
+    dest: "{{ base_dir }}/django"
     clone: yes
     force: yes
     version: master
@@ -26,40 +28,42 @@
 - name: Copy docker-compose file
   template:
     src: docker-compose.yml.j2
-    dest: "{{ work_dir }}/docker-compose.yml"
+    dest: "{{ base_dir }}/docker-compose.yml"
     mode: 0644
 
 - name: Copy healthcheck
   template:
     src: docker-healthcheck.j2
-    dest: "{{ work_dir }}/docker-healthcheck"
+    dest: "{{ base_dir }}/docker-healthcheck"
     mode: 0755
 
 - name: Copy Dockerfile
   template:
     src: Dockerfile.j2
-    dest: "{{ work_dir }}/django/projectname/Dockerfile"
+    dest: "{{ base_dir }}/django/Dockerfile"
     mode: 0644
 
 - name: Copy entrypoint
   template:
     src: entrypoint.sh.j2
-    dest: "{{ work_dir }}/django/projectname/entrypoint.sh"
+    dest: "{{ base_dir }}/django/entrypoint.sh"
     mode: 0755
 
 - name: Copy app configs
   template:
     src: settings.py.j2
-    dest: "{{ work_dir }}/django/projectname/settings/default.py"
+    dest: "{{ base_dir }}/django/projectname/settings/default.py"
 
 - name: Copy nginx config
   template:
     src: nginx.conf.j2
-    dest: "{{ work_dir }}/nginx/nginx.conf"
+    dest: "{{ base_dir }}/nginx/nginx.conf"
 
 - name: Run docker compose
   docker_service:
     files:
-      - {{ work_dir }}/docker-compose.yml
-    project_src: "{{ work_dir }}"
+      - "{{ base_dir }}/docker-compose.yml"
+    project_src: "{{ base_dir }}"
+    build: true
+    recreate: always
     state: present

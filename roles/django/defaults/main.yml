@@ -1,5 +1,5 @@
 ---
 repo_url: https://github.com/kirpit/django-sample-app.git
 base_dir: /opt/app
-project_name: sample
+project_name: projectname
 app_port: 8080
