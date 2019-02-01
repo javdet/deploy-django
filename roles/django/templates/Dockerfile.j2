@@ -1,7 +1,6 @@
 FROM python:2.7
 ENV PYTHONUNBUFFERED 1
-RUN mkdir -p /app/{{ project_name }}
-WORKDIR /app/{{ project_name }}
-COPY requirements.txt entrypoint.sh /app/{{ project_name }}/
-RUN pip install -r requirements.txt
-COPY ./{{ project_name }} /app/{{ project_name }}
+RUN mkdir -p /app
+WORKDIR /app
+COPY . /app
+RUN pip install -r requirements.txt && pip install uwsgi

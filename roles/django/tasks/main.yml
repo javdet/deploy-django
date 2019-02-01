@@ -49,6 +49,18 @@
     dest: "{{ base_dir }}/django/entrypoint.sh"
     mode: 0755
 
+- name: Copy uwsgi.ini
+  template:
+    src: uwsgi.ini.j2
+    dest: "{{ base_dir }}/django/uwsgi.ini"
+    mode: 0644
+
+- name: Copy wsgi.py
+  template:
+    src: wsgi.py.j2
+    dest: "{{ base_dir }}/django/projectname/wsgi.py"
+    mode: 0644
+
 - name: Copy app configs
   template:
     src: settings.py.j2

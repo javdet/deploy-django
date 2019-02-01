@@ -1,0 +1,12 @@
+[uwsgi]
+http-socket = :{{ app_port }}
+socket=app.sock
+master=true
+# maximum number of worker processes
+processes=4
+threads=2
+# Django's wsgi file
+module={{ project_name }}.wsgi:application
+
+# clear environment on exit
+vacuum = true

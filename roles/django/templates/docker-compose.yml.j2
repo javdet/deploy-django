@@ -19,9 +19,7 @@ services:
   app:
     build: ./django
     restart: always
-    volumes:
-      - ./django/static-assets:/app/{{ project_name }}/static
-    entrypoint: /app/{{ project_name }}/entrypoint.sh
+    entrypoint: /app/entrypoint.sh
     expose:
       - {{ app_port }}
     depends_on:
